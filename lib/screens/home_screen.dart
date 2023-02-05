@@ -56,6 +56,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void onReset() {
+    setState(() {
+      totalPomodoros = 0;
+      totalSeconds = twentyFiveMinutes;
+    });
+    timer.cancel();
+  }
+
   String format(int seconds) {
     // 초를 받으면 분단위로 변환해준다.
     // 초단위 => mm:ss
@@ -91,17 +99,63 @@ class _HomeScreenState extends State<HomeScreen> {
           Flexible(
             flex: 3,
             // Flexible영역에서 가로세로 정 가운데 정렬
-            child: Center(
-              child: IconButton(
-                iconSize: 120,
-                color: Theme.of(context).cardColor,
-                onPressed: isRunning ? onPausePressed : onStartPerssed,
-                icon: Icon(
-                  isRunning
-                      ? Icons.pause_circle_outline
-                      : Icons.play_circle_outline,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Transform.translate(
+                              offset: const Offset(0, 30),
+                              child: IconButton(
+                                iconSize: 120,
+                                color: Theme.of(context).cardColor,
+                                onPressed:
+                                    isRunning ? onPausePressed : onStartPerssed,
+                                icon: Icon(
+                                  isRunning
+                                      ? Icons.pause_circle_outline
+                                      : Icons.play_circle_outline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+                Flexible(
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Transform.translate(
+                              offset: const Offset(0, -20),
+                              child: IconButton(
+                                iconSize: 40,
+                                color: Theme.of(context).cardColor,
+                                onPressed: onReset,
+                                icon: const Icon(
+                                  Icons.refresh_outlined,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
           Flexible(
