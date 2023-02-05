@@ -10,17 +10,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int totalSeconds = 1500;
+  static const twentyFiveMinutes = 1500;
+  int totalSeconds = twentyFiveMinutes;
+  bool isRunning = false;
+  int totalPomodoros = 0;
   late Timer timer;
 
   // 동작 상태에따라 제어를 하기위한 장치
-  bool isRunning = false;
 
   // Timer에 사용되는 함수는 Timer를 파라미터로 받아야한다.
   void onTick(Timer timer) {
-    setState(() {
-      totalSeconds = totalSeconds - 1;
-    });
+    if (totalSeconds == 0) {
+      setState(() {
+        // totalPomodoros의 값을 1 증가 시켜준다.
+        //(pomodoros를 실행한 횟수)
+        totalPomodoros = totalPomodoros + 1;
+        isRunning = false;
+        // totalSeconds reset
+        totalSeconds = twentyFiveMinutes;
+      });
+      timer.cancel();
+    } else {
+      setState(() {
+        totalSeconds = totalSeconds - 1;
+      });
+    }
   }
 
   void onStartPerssed() {
@@ -42,6 +56,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  String format(int seconds) {
+    // 초를 받으면 분단위로 변환해준다.
+    // 초단위 => mm:ss
+    var duration = Duration(seconds: seconds);
+    return duration.toString().split(".").first.substring(2);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               // Container영역에서의 최하단 가운데 정렬
               alignment: Alignment.bottomCenter,
               child: Text(
-                "$totalSeconds",
+                format(totalSeconds),
                 style: TextStyle(
                   // 부모의 요소에서 cardColor멤버를 가져와서 사용한다.
                   color: Theme.of(context).cardColor,
@@ -112,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Text(
-                          "0",
+                          "$totalPomodoros",
                           style: TextStyle(
                             fontSize: 58,
                             fontWeight: FontWeight.w600,
