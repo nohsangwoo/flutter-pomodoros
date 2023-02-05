@@ -13,13 +13,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalSeconds = 1500;
   late Timer timer;
 
+  // 동작 상태에따라 제어를 하기위한 장치
+  bool isRunning = false;
+
   // Timer에 사용되는 함수는 Timer를 파라미터로 받아야한다.
   void onTick(Timer timer) {
-    setState(
-      () {
-        totalSeconds = totalSeconds - 1;
-      },
-    );
+    setState(() {
+      totalSeconds = totalSeconds - 1;
+    });
   }
 
   void onStartPerssed() {
@@ -28,6 +29,17 @@ class _HomeScreenState extends State<HomeScreen> {
       const Duration(seconds: 1),
       onTick,
     );
+    setState(() {
+      isRunning = true;
+    });
+  }
+
+  // timer를 취소함.
+  void onPausePressed() {
+    timer.cancel();
+    setState(() {
+      isRunning = false;
+    });
   }
 
   @override
@@ -62,8 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: IconButton(
                 iconSize: 120,
                 color: Theme.of(context).cardColor,
-                onPressed: onStartPerssed,
-                icon: const Icon(Icons.play_circle_outline),
+                onPressed: isRunning ? onPausePressed : onStartPerssed,
+                icon: Icon(
+                  isRunning
+                      ? Icons.pause_circle_outline
+                      : Icons.play_circle_outline,
+                ),
               ),
             ),
           ),
